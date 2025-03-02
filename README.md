@@ -24,6 +24,19 @@ EduPlatform is an innovative solution developed during the Hackmatrix hackathon.
 - Google Classroom API
 - MongoDB
 
+## Routes
+- **Landing Page**: /
+- **Student Dashboard**: /dashboard
+- **Classroom**: /classroom
+- **MCQ Generator**: /mcqgenerator
+- **Classroom Viewer**: /classroom/:id
+- **Feedback**: /feedback
+- **Student Attendance Page**: /attendance
+- **Teacher Attendance Page**: /teacher
+- **Teacher Quiz Page**: /teacher-quiz
+- **Student Quiz Page**: /student-quiz
+- **Teacher Dashboard**: /teacherDashboard
+
 ## Screenshots
 ### Landing Page
 ![image](https://github.com/user-attachments/assets/6506e272-5638-4f9b-9796-7c2b058a32c5)
@@ -75,8 +88,6 @@ EduPlatform is an innovative solution developed during the Hackmatrix hackathon.
 ### Teacher Quiz Creation Portal 
 ![image](https://github.com/user-attachments/assets/15306fa6-3a73-4435-9d5f-187026c1eded)
 ![image](https://github.com/user-attachments/assets/1dfd0796-cc64-4b0e-bae6-600164b4961b)
-
-
 
 ## Deployed Url
 [Link to Deployed Solution](https://hm-0069-frontend.vercel.app/)
