@@ -1,7 +1,6 @@
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Card } from "@/components/ui/card";
 import axios from "axios";
 import {
   Calendar,
@@ -10,13 +9,26 @@ import {
   FileText,
   GraduationCap,
   School,
-  ExternalLink,
   BookOpen,
-  ChevronRight,
-  ChevronDown,
+  BarChart3,
+  Award,
+  Flame,
+  CheckCircle,
+  Star,
+  TrendingUp,
+  Activity,
+  Target,
+  Bell,
+  MessageSquare,
+  Settings,
+  HelpCircle,
+  BookMarked,
+  Video,
+  PenTool
 } from "lucide-react";
-import { Course, CourseResponse } from "@/utils/types";
-import Navbar from "@/components/Navbar";
+import Navbar from "../components/Navbar";
+import { Button } from "../components/ui/button";
+import { mockAttendanceData } from "../utils/data";
 
 // Set up axios interceptor to attach token
 axios.interceptors.request.use(
@@ -32,159 +44,92 @@ axios.interceptors.request.use(
 
 export default function Dashboard() {
   const navigate = useNavigate();
-  const [courses, setCourses] = useState<Course[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [sortBy, setSortBy] = useState<"name" | "date">("name");
-  const [studentName, setStudentName] = useState<string | null>(null);
-  const [showAllCourses, setShowAllCourses] = useState(false);
-
-  const INITIAL_COURSES_TO_SHOW = 6;
-
-  useEffect(() => {
-    const name = localStorage.getItem("studentName") || "Student";
-    setStudentName(name);
-  }, []);
-
-  useEffect(() => {
-    const fetchCourses = async () => {
-      try {
-        const response = await fetch(
-          "https://classroom.googleapis.com/v1/courses",
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-              Accept: "application/json",
-            },
-          }
-        );
-
-        if (!response.ok) {
-          throw new Error("Failed to fetch courses");
-        }
-
-        const data: CourseResponse = await response.json();
-        setCourses(data.courses || []);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "An error occurred");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchCourses();
-  }, []);
-
-  const activeCourses = courses.filter(
-    (course) => course.courseState === "ACTIVE"
-  );
-
-  const filteredAndSortedCourses = activeCourses
-    .filter(
-      (course) =>
-        course.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (course.section &&
-          course.section.toLowerCase().includes(searchTerm.toLowerCase()))
-    )
-    .sort((a, b) => {
-      if (sortBy === "name") {
-        return a.name.localeCompare(b.name);
-      } else {
-        return (
-          new Date(b.creationTime).getTime() -
-          new Date(a.creationTime).getTime()
-        );
-      }
-    });
-
-  const displayedCourses = showAllCourses
-    ? filteredAndSortedCourses
-    : filteredAndSortedCourses.slice(0, INITIAL_COURSES_TO_SHOW);
-
-  const hasMoreCourses =
-    filteredAndSortedCourses.length > INITIAL_COURSES_TO_SHOW;
-
-  const stats = [
-    {
-      icon: School,
-      label: "Active Courses",
-      value: `${activeCourses.length}`,
-      iconColor: "text-blue-500",
-      bgColor: "bg-blue-100",
-    },
-    {
-      icon: GraduationCap,
-      label: "Total Courses",
-      value: `${courses.length}`,
-      iconColor: "text-purple-500",
-      bgColor: "bg-purple-100",
-    },
-    {
-      icon: Calendar,
-      label: "Current Term",
-      value: "2024-25",
-      iconColor: "text-green-500",
-      bgColor: "bg-green-100",
-    },
-    {
-      icon: Users,
-      label: "Course Groups",
-      value: `${activeCourses.length}`,
-      iconColor: "text-yellow-500",
-      bgColor: "bg-yellow-100",
-    },
+  const [loading, setLoading] = useState(false);
+  const [studentName, setStudentName] = useState<string>("Student");
+  const [activeStreak, setActiveStreak] = useState<number>(12);
+  const [totalLoginDays, setTotalLoginDays] = useState<number>(45);
+  const [completionRate, setCompletionRate] = useState<number>(87);
+  const [selectedTimeframe, setSelectedTimeframe] = useState<string>("week");
+  const [activeQuickAction, setActiveQuickAction] = useState<string | null>(null);
+  
+  // Calculate overall attendance
+  const totalClasses = mockAttendanceData.reduce((sum, subject) => sum + subject.totalClasses, 0);
+  const totalAttended = mockAttendanceData.reduce((sum, subject) => sum + subject.attended, 0);
+  const overallPercentage = totalClasses > 0 ? (totalAttended / totalClasses) * 100 : 0;
+  
+  // Mock activity data
+  const activityData = [65, 40, 85, 30, 70, 50, 90];
+  const weekdays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+  
+  // Mock achievements
+  const achievements = [
+    { id: 1, title: "Perfect Week", description: "100% attendance for a week", icon: CheckCircle, completed: true, progress: 100 },
+    { id: 2, title: "Knowledge Seeker", description: "Complete 50 assignments", icon: BookOpen, completed: false, progress: 76 },
+    { id: 3, title: "Early Bird", description: "Login before 8 AM for 5 days", icon: Clock, completed: true, progress: 100 },
+    { id: 4, title: "Top Performer", description: "Score 90%+ in 3 subjects", icon: Award, completed: false, progress: 67 }
+  ];
+  
+  // Mock upcoming deadlines
+  const upcomingDeadlines = [
+    { id: 1, title: "Physics Assignment", subject: "Physics", dueDate: "2025-03-15", daysLeft: 2 },
+    { id: 2, title: "Literature Essay", subject: "English Literature", dueDate: "2025-03-18", daysLeft: 5 },
+    { id: 3, title: "Algorithm Project", subject: "Computer Science", dueDate: "2025-03-20", daysLeft: 7 }
+  ];
+  
+  // Mock recent activities
+  const recentActivities = [
+    { id: 1, action: "Submitted assignment", subject: "Mathematics", time: "2 hours ago" },
+    { id: 2, action: "Attended class", subject: "Physics", time: "Yesterday" },
+    { id: 3, action: "Completed quiz", subject: "Computer Science", time: "2 days ago" },
+    { id: 4, action: "Viewed lecture notes", subject: "English Literature", time: "3 days ago" }
+  ];
+  
+  // Mock performance by subject
+  const subjectPerformance = [
+    { subject: "Mathematics", score: 92, trend: "up" },
+    { subject: "Physics", score: 85, trend: "up" },
+    { subject: "Computer Science", score: 95, trend: "up" },
+    { subject: "English Literature", score: 78, trend: "down" },
+    { subject: "Chemistry", score: 82, trend: "stable" }
   ];
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    });
+  // Enhanced quick actions
+  const quickActions = [
+    { id: "attendance", title: "Attendance", icon: Users, path: "/attendance", color: "from-purple-500 to-purple-600" },
+    { id: "assignments", title: "Assignments", icon: FileText, path: "/assignments", color: "from-blue-500 to-blue-600" },
+    { id: "schedule", title: "Schedule", icon: Calendar, path: "/schedule", color: "from-green-500 to-green-600" },
+    { id: "grades", title: "Grades", icon: BarChart3, path: "/grades", color: "from-yellow-500 to-yellow-600" },
+    { id: "courses", title: "Courses", icon: BookMarked, path: "/courses", color: "from-red-500 to-red-600" },
+    { id: "notes", title: "Notes", icon: PenTool, path: "/notes", color: "from-pink-500 to-pink-600" },
+  ];
+  
+  const getAttendanceColor = (percentage: number) => {
+    if (percentage >= 90) return "text-green-500";
+    if (percentage >= 75) return "text-yellow-500";
+    return "text-red-500";
+  };
+  
+  const getAttendanceBgColor = (percentage: number) => {
+    if (percentage >= 90) return "bg-green-500";
+    if (percentage >= 75) return "bg-yellow-500";
+    return "bg-red-500";
+  };
+  
+  const getTrendIcon = (trend: string) => {
+    if (trend === "up") return <TrendingUp className="h-4 w-4 text-green-500" />;
+    if (trend === "down") return <TrendingUp className="h-4 w-4 text-red-500 transform rotate-180" />;
+    return <div className="h-4 w-4 border-t-2 border-gray-400"></div>;
   };
 
-  const handleCourseClick = (courseId: string, e: React.MouseEvent) => {
-    e.stopPropagation(); // Prevent the link's default behavior
-    navigate(`/classroom/${courseId}`); // Navigate to the submissions route
+  const handleQuickActionClick = (actionId: string, path: string) => {
+    setActiveQuickAction(actionId);
+    
+    // Add a small delay for the animation effect before navigating
+    setTimeout(() => {
+      navigate(path);
+    }, 300);
   };
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-50">
-        <Navbar />
-        <div className="flex justify-center items-center h-[calc(100vh-200px)]">
-          <div className="text-center">
-            <div className="w-16 h-16 border-4 border-purple-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-            <p className="text-xl text-gray-600">Loading...</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="min-h-screen bg-gray-50">
-        <Navbar />
-        <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-          <div className="text-center max-w-md mx-auto px-4">
-            <div className="bg-red-100 text-red-700 p-4 rounded-lg mb-4">
-              <p className="font-medium">Error loading courses</p>
-              <p className="text-sm">{error}</p>
-            </div>
-            <button
-              onClick={() => window.location.reload()}
-              className="text-blue-500 hover:text-blue-600"
-            >
-              Try again
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
+  
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />
@@ -198,201 +143,359 @@ export default function Dashboard() {
         >
           <h1 className="text-3xl font-bold mb-2">Welcome, {studentName}!</h1>
           <p className="text-gray-600">
-            Manage your courses and track your academic progress
+            Here's an overview of your academic progress and activity
           </p>
         </motion.div>
 
-        {/* Stats Grid */}
+        {/* Top Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          {stats.map((stat, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-            >
-              <Card className="p-6 hover:shadow-lg transition-shadow duration-200">
-                <div className="flex items-center space-x-4">
-                  <div className={`p-3 rounded-full ${stat.bgColor}`}>
-                    <stat.icon className={`h-6 w-6 ${stat.iconColor}`} />
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-600">{stat.label}</p>
-                    <p className="text-2xl font-bold">{stat.value}</p>
-                  </div>
-                </div>
-              </Card>
-            </motion.div>
-          ))}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-shadow"
+          >
+            <div className="flex items-center justify-between mb-4">
+              <div className="p-3 bg-purple-100 rounded-full">
+                <Flame className="h-6 w-6 text-purple-600" />
+              </div>
+              <span className="text-sm font-medium text-purple-600 bg-purple-50 px-2 py-1 rounded-full">
+                Streak
+              </span>
+            </div>
+            <h3 className="text-2xl font-bold mb-1">{activeStreak} days</h3>
+            <p className="text-gray-600 text-sm">Current active streak</p>
+          </motion.div>
+          
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-shadow"
+          >
+            <div className="flex items-center justify-between mb-4">
+              <div className="p-3 bg-blue-100 rounded-full">
+                <Calendar className="h-6 w-6 text-blue-600" />
+              </div>
+              <span className="text-sm font-medium text-blue-600 bg-blue-50 px-2 py-1 rounded-full">
+                Activity
+              </span>
+            </div>
+            <h3 className="text-2xl font-bold mb-1">{totalLoginDays} days</h3>
+            <p className="text-gray-600 text-sm">Total active days this term</p>
+          </motion.div>
+          
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+            className="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-shadow"
+          >
+            <div className="flex items-center justify-between mb-4">
+              <div className="p-3 bg-green-100 rounded-full">
+                <CheckCircle className="h-6 w-6 text-green-600" />
+              </div>
+              <span className="text-sm font-medium text-green-600 bg-green-50 px-2 py-1 rounded-full">
+                Tasks
+              </span>
+            </div>
+            <h3 className="text-2xl font-bold mb-1">{completionRate}%</h3>
+            <p className="text-gray-600 text-sm">Assignment completion rate</p>
+          </motion.div>
+          
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+            className="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-shadow"
+          >
+            <div className="flex items-center justify-between mb-4">
+              <div className="p-3 bg-yellow-100 rounded-full">
+                <GraduationCap className="h-6 w-6 text-yellow-600" />
+              </div>
+              <span className="text-sm font-medium text-yellow-600 bg-yellow-50 px-2 py-1 rounded-full">
+                Attendance
+              </span>
+            </div>
+            <h3 className={`text-2xl font-bold mb-1 ${getAttendanceColor(overallPercentage)}`}>
+              {overallPercentage.toFixed(1)}%
+            </h3>
+            <p className="text-gray-600 text-sm">Overall attendance rate</p>
+          </motion.div>
         </div>
 
-        {/* Active Courses Section */}
+        {/* Activity Chart and Achievements */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+          {/* Activity Chart */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.5 }}
+            className="bg-white rounded-xl shadow-md p-6 lg:col-span-2"
+          >
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-xl font-semibold">Activity Overview</h2>
+              <div className="flex space-x-2">
+                <button 
+                  onClick={() => setSelectedTimeframe("week")}
+                  className={`px-3 py-1 text-sm rounded-md ${
+                    selectedTimeframe === "week" 
+                      ? "bg-purple-100 text-purple-700" 
+                      : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                  }`}
+                >
+                  Week
+                </button>
+                <button 
+                  onClick={() => setSelectedTimeframe("month")}
+                  className={`px-3 py-1 text-sm rounded-md ${
+                    selectedTimeframe === "month" 
+                      ? "bg-purple-100 text-purple-700" 
+                      : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                  }`}
+                >
+                  Month
+                </button>
+              </div>
+            </div>
+            
+            <div className="h-64 flex items-end space-x-2">
+              {activityData.map((value, index) => (
+                <div key={index} className="flex-1 flex flex-col items-center">
+                  <div 
+                    className="w-full bg-purple-500 rounded-t-md transition-all duration-500 ease-in-out"
+                    style={{ height: `${value}%`, opacity: 0.7 + (index / 10) }}
+                  ></div>
+                  <span className="text-xs mt-2 text-gray-600">{weekdays[index]}</span>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+          
+          {/* Achievements */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.6 }}
+            className="bg-white rounded-xl shadow-md p-6"
+          >
+            <h2 className="text-xl font-semibold mb-4">Achievements</h2>
+            <div className="space-y-4">
+              {achievements.map((achievement) => (
+                <div key={achievement.id} className="flex items-start space-x-3">
+                  <div className={`p-2 rounded-full ${achievement.completed ? 'bg-green-100' : 'bg-gray-100'}`}>
+                    <achievement.icon className={`h-5 w-5 ${achievement.completed ? 'text-green-600' : 'text-gray-500'}`} />
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex justify-between items-center">
+                      <h3 className="font-medium">{achievement.title}</h3>
+                      <span className="text-xs font-medium">
+                        {achievement.progress}%
+                      </span>
+                    </div>
+                    <p className="text-xs text-gray-600 mb-1">{achievement.description}</p>
+                    <div className="h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                      <div 
+                        className={`h-full ${achievement.completed ? 'bg-green-500' : 'bg-purple-500'}`}
+                        style={{ width: `${achievement.progress}%` }}
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="mt-4 text-center">
+              <Button 
+                variant="ghost" 
+                className="text-purple-600 hover:text-purple-700 text-sm"
+                onClick={() => {/* View all achievements */}}
+              >
+                View All Achievements
+              </Button>
+            </div>
+          </motion.div>
+        </div>
+        
+        {/* Upcoming Deadlines and Recent Activity */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+          {/* Upcoming Deadlines */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.7 }}
+            className="bg-white rounded-xl shadow-md p-6"
+          >
+            <h2 className="text-xl font-semibold mb-4">Upcoming Deadlines</h2>
+            <div className="space-y-4">
+              {upcomingDeadlines.map((deadline) => (
+                <div key={deadline.id} className="flex items-start space-x-3 p-3 hover:bg-gray-50 rounded-lg transition-colors">
+                  <div className={`p-2 rounded-full ${
+                    deadline.daysLeft <= 2 ? 'bg-red-100' : deadline.daysLeft <= 5 ? 'bg-yellow-100' : 'bg-green-100'
+                  }`}>
+                    <Calendar className={`h-5 w-5 ${
+                      deadline.daysLeft <= 2 ? 'text-red-600' : deadline.daysLeft <= 5 ? 'text-yellow-600' : 'text-green-600'
+                    }`} />
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex justify-between">
+                      <h3 className="font-medium">{deadline.title}</h3>
+                      <span className={`text-xs font-medium px-2 py-1 rounded-full ${
+                        deadline.daysLeft <= 2 ? 'bg-red-100 text-red-700' : 
+                        deadline.daysLeft <= 5 ? 'bg-yellow-100 text-yellow-700' : 
+                        'bg-green-100 text-green-700'
+                      }`}>
+                        {deadline.daysLeft} {deadline.daysLeft === 1 ? 'day' : 'days'} left
+                      </span>
+                    </div>
+                    <p className="text-sm text-gray-600">{deadline.subject}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="mt-4 text-center">
+              <Button 
+                variant="ghost" 
+                className="text-purple-600 hover:text-purple-700 text-sm"
+                onClick={() => {/* View all deadlines */}}
+              >
+                View All Deadlines
+              </Button>
+            </div>
+          </motion.div>
+          
+          {/* Recent Activity */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.8 }}
+            className="bg-white rounded-xl shadow-md p-6"
+          >
+            <h2 className="text-xl font-semibold mb-4">Recent Activity</h2>
+            <div className="space-y-4">
+              {recentActivities.map((activity) => (
+                <div key={activity.id} className="flex items-start space-x-3 p-3 hover:bg-gray-50 rounded-lg transition-colors">
+                  <div className="p-2 bg-blue-100 rounded-full">
+                    <Activity className="h-5 w-5 text-blue-600" />
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex justify-between">
+                      <h3 className="font-medium">{activity.action}</h3>
+                      <span className="text-xs text-gray-500">{activity.time}</span>
+                    </div>
+                    <p className="text-sm text-gray-600">{activity.subject}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="mt-4 text-center">
+              <Button 
+                variant="ghost" 
+                className="text-purple-600 hover:text-purple-700 text-sm"
+                onClick={() => {/* View activity history */}}
+              >
+                View Activity History
+              </Button>
+            </div>
+          </motion.div>
+        </div>
+        
+        {/* Performance by Subject */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-          className="mb-8"
+          transition={{ duration: 0.5, delay: 0.9 }}
+          className="bg-white rounded-xl shadow-md p-6 mb-8"
         >
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-bold text-gray-800">Active Courses</h2>
-            <div className="flex space-x-4">
-              <div className="relative">
-                <input
-                  type="text"
-                  placeholder="Search courses..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="px-4 py-2 border border-gray-300 bg-transparent rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
-                />
+          <h2 className="text-xl font-semibold mb-6">Performance by Subject</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+            {subjectPerformance.map((subject, index) => (
+              <div 
+                key={index}
+                className="bg-gray-50 rounded-lg p-4 hover:shadow-md transition-shadow"
+              >
+                <div className="flex justify-between items-center mb-2">
+                  <h3 className="font-medium text-gray-800">{subject.subject}</h3>
+                  {getTrendIcon(subject.trend)}
+                </div>
+                <div className="flex items-end space-x-2">
+                  <span className="text-2xl font-bold">{subject.score}%</span>
+                  <div className="flex-1 h-1 bg-gray-200 rounded-full overflow-hidden">
+                    <div 
+                      className={`h-full ${
+                        subject.score >= 90 ? 'bg-green-500' : 
+                        subject.score >= 75 ? 'bg-blue-500' : 
+                        'bg-yellow-500'
+                      }`}
+                      style={{ width: `${subject.score}%` }}
+                    ></div>
+                  </div>
+                </div>
               </div>
-              <select
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value as "name" | "date")}
-                className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none bg-white"
-              >
-                <option value="name">Sort by Name</option>
-                <option value="date">Sort by Date</option>
-              </select>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {displayedCourses.map((course, index) => (
-              <motion.div
-                key={course.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="group"
-              >
-                <Card
-                  className="relative h-full p-6 cursor-pointer transform transition-all duration-200 hover:shadow-xl hover:scale-102 border-2 border-transparent hover:border-blue-500"
-                  onClick={(e) => handleCourseClick(course.id, e)}
-                >
-                  <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <a
-                      href={course.alternateLink}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      onClick={(e) => e.stopPropagation()}
-                      className="p-2 hover:bg-gray-100 rounded-full transition-colors"
-                    >
-                      <ExternalLink className="h-5 w-5 text-gray-500 hover:text-blue-500" />
-                    </a>
-                  </div>
-
-                  <div className="flex flex-col h-full">
-                    <div className="mb-4">
-                      <div className="flex items-center space-x-3 mb-2">
-                        <div className="p-2 bg-blue-100 rounded-lg">
-                          <BookOpen className="h-6 w-6 text-blue-600" />
-                        </div>
-                        <h3 className="font-semibold text-lg text-gray-800 line-clamp-2">
-                          {course.name}
-                        </h3>
-                      </div>
-                      {course.section && (
-                        <div className="flex items-center text-sm text-gray-600 mb-2">
-                          <Users className="h-4 w-4 mr-2" />
-                          <span>Section {course.section}</span>
-                        </div>
-                      )}
-                    </div>
-
-                    <div className="mt-auto">
-                      <div className="flex items-center justify-between text-sm text-gray-600">
-                        <div className="flex items-center">
-                          <Calendar className="h-4 w-4 mr-2" />
-                          <span>{formatDate(course.creationTime)}</span>
-                        </div>
-                        <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium">
-                          Active
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </Card>
-              </motion.div>
             ))}
           </div>
-
-          {filteredAndSortedCourses.length === 0 && (
-            <div className="text-center py-12">
-              <BookOpen className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">
-                No courses found
-              </h3>
-              <p className="text-gray-600">
-                {searchTerm
-                  ? "Try adjusting your search terms"
-                  : "You have no active courses at the moment"}
-              </p>
-            </div>
-          )}
-
-          {hasMoreCourses && !searchTerm && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.3 }}
-              className="mt-8 text-center"
-            >
-              <button
-                onClick={() => setShowAllCourses(!showAllCourses)}
-                className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 
-                hover:from-purple-700 hover:to-blue-700 text-white transition-colors duration-200 
-                font-medium rounded-lg"
-              >
-                {showAllCourses ? (
-                  <>
-                    Show Less
-                    <ChevronDown className="ml-2 h-5 w-5" />
-                  </>
-                ) : (
-                  <>
-                    View All Courses
-                    <ChevronRight className="ml-2 h-5 w-5" />
-                  </>
-                )}
-              </button>
-            </motion.div>
-          )}
         </motion.div>
-
-        {/* Course Information */}
+        
+        {/* Enhanced Quick Actions */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.5 }}
-          className="mt-8"
+          transition={{ duration: 0.5, delay: 1.0 }}
+          className="mb-8"
         >
-          <Card className="p-6">
-            <h2 className="text-xl font-semibold mb-4">Course Information</h2>
-            <div className="space-y-4">
-              <div className="flex items-center space-x-4">
-                <div className="p-2 bg-green-100 rounded-full">
-                  <FileText className="h-5 w-5 text-green-600" />
+          <h2 className="text-xl font-semibold mb-6">Quick Actions</h2>
+          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-4">
+            {quickActions.map((action) => (
+              <motion.button
+                key={action.id}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => handleQuickActionClick(action.id, action.path)}
+                className={`relative overflow-hidden rounded-xl shadow-md transition-all duration-300 ${
+                  activeQuickAction === action.id ? 'ring-2 ring-offset-2 ring-purple-500' : ''
+                }`}
+              >
+                <div className={`absolute inset-0 bg-gradient-to-br ${action.color} opacity-90`}></div>
+                <div className="relative p-6 flex flex-col items-center justify-center h-full">
+                  <action.icon className="h-8 w-8 text-white mb-3" />
+                  <span className="text-white font-medium text-sm">{action.title}</span>
                 </div>
-                <div>
-                  <p className="font-medium">Active Courses</p>
-                  <p className="text-sm text-gray-600">
-                    You have {activeCourses.length} active courses
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-center space-x-4">
-                <div className="p-2 bg-purple-100 rounded-full">
-                  <Clock className="h-5 w-5 text-purple-600" />
-                </div>
-                <div>
-                  <p className="font-medium">Latest Course</p>
-                  <p className="text-sm text-gray-600">
-                    {activeCourses[0]?.name || "No active courses"}
-                  </p>
-                </div>
-              </div>
+              </motion.button>
+            ))}
+          </div>
+        </motion.div>
+        
+        {/* Help & Support */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 1.1 }}
+          className="bg-white rounded-xl shadow-md p-6"
+        >
+          <div className="flex justify-between items-center">
+            <h2 className="text-xl font-semibold">Help & Support</h2>
+            <div className="flex space-x-2">
+              <button className="p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors">
+                <Bell className="h-5 w-5 text-gray-600" />
+              </button>
+              <button className="p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors">
+                <Settings className="h-5 w-5 text-gray-600" />
+              </button>
+              <button className="p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors">
+                <HelpCircle className="h-5 w-5 text-gray-600" />
+              </button>
             </div>
-          </Card>
+          </div>
+          <div className="mt-4 p-4 bg-purple-50 rounded-lg border border-purple-100">
+            <p className="text-purple-800">
+              Need help with your studies? Our AI tutor is available 24/7 to assist you with any subject.
+            </p>
+            <Button 
+              className="mt-3 bg-purple-600 hover:bg-purple-700"
+              onClick={() => {/* Open AI tutor */}}
+            >
+              Ask AI Tutor
+            </Button>
+          </div>
         </motion.div>
       </main>
     </div>
