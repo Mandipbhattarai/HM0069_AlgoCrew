@@ -10,6 +10,7 @@ import AttendancePage from "./pages/Attendacne";
 import TeacherAttendancePage from "./pages/TeacherAttendancePortal";
 import TeacherQuizPage from "./pages/TeacherQuizPage";
 import StudentQuizPage from "./pages/StudentQuizPage";
+import TeacherDashboard from "./pages/TeacherDashboard";
 function App() {
   return (
     <GoogleOAuthProvider clientId="707090231940-d10jbf8rjelqlm0c2hunbltbjm5hp2p4.apps.googleusercontent.com">
@@ -25,6 +26,7 @@ function App() {
           <Route path="/teacher" element={<TeacherAttendancePage />} />
           <Route path="/teacher-quiz" element={<TeacherQuizPage />} />
           <Route path="/student-quiz" element={<StudentQuizPage />} />
+          <Route path="/teacherDashboard" element={<TeacherDashboard />} />
         </Routes>
       </Router>
     </GoogleOAuthProvider>
