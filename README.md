@@ -12,9 +12,11 @@ EduPlatform is an innovative solution developed during the Hackmatrix hackathon.
 - **Personalized Dashboard**: Provides a personalized dashboard for students and teachers to track progress and performance.
 
 ## Tech Stack
-- Node.js
-- Express.js
-- React.js
+- Node
+- Express
+- React
+- Typescript
+- Flask
 - Google Classroom API
 - MongoDB
 
