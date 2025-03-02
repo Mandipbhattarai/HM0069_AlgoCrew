@@ -79,7 +79,7 @@ EduPlatform is an innovative solution developed during the Hackmatrix hackathon.
 
 
 ## Deployed Url
-[Link to Deployed Solution](https://gfgpccoe.in)
+[Link to Deployed Solution]((https://hm-0069-frontend.vercel.app/))
 
 ## Video Url
 [Link to Demo Video](https://drive.google.com/drive/folders/1oS67p8Eqg8g3Ape4NxHd-JCzcLHLEGn4?usp=drive_link)
