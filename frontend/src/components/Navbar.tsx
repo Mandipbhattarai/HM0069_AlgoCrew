@@ -120,6 +120,12 @@ export default function Navbar() {
                 >
                   Quiz
                 </Link>
+                <Link
+                  to="/attendance"
+                  className="text-purple-700 hover:text-purple-900"
+                >
+                  Attendance
+                </Link>
                 <Button
                   onClick={logout}
                   variant="outline"

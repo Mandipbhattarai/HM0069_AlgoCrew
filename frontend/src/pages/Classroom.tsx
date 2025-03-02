@@ -110,25 +110,29 @@ export default function Classroom() {
       icon: School,
       label: "Active Courses",
       value: `${activeCourses.length}`,
-      color: "text-blue-500",
+      iconColor: "text-blue-500",
+      bgColor: "bg-blue-100",
     },
     {
       icon: GraduationCap,
       label: "Total Courses",
       value: `${courses.length}`,
-      color: "text-purple-500",
+      iconColor: "text-purple-500",
+      bgColor: "bg-purple-100",
     },
     {
       icon: Calendar,
       label: "Current Term",
       value: "2024-25",
-      color: "text-green-500",
+      iconColor: "text-green-500",
+      bgColor: "bg-green-100",
     },
     {
       icon: Users,
       label: "Course Groups",
       value: `${activeCourses.length}`,
-      color: "text-yellow-500",
+      iconColor: "text-yellow-500",
+      bgColor: "bg-yellow-100",
     },
   ];
 
@@ -210,13 +214,8 @@ export default function Classroom() {
             >
               <Card className="p-6 hover:shadow-lg transition-shadow duration-200">
                 <div className="flex items-center space-x-4">
-                  <div
-                    className={`p-3 rounded-full bg-opacity-10 ${stat.color.replace(
-                      "text",
-                      "bg"
-                    )}`}
-                  >
-                    <stat.icon className={`h-6 w-6 ${stat.color}`} />
+                  <div className={`p-3 rounded-full ${stat.bgColor}`}>
+                    <stat.icon className={`h-6 w-6 ${stat.iconColor}`} />
                   </div>
                   <div>
                     <p className="text-sm text-gray-600">{stat.label}</p>

@@ -4,9 +4,12 @@ import { GoogleOAuthProvider } from "@react-oauth/google";
 import Dashboard from "./pages/Dashboard";
 import Classroom from "./pages/Classroom";
 import MCQGenerator from "./pages/MCQGenerator";
-import ClassroomViewer from "./components/custom/Classroom";
 import Feedback from "./pages/Feedback";
-
+import ClassroomViewer from "./components/custom/ClassroomViewer";
+import AttendancePage from "./pages/Attendacne";
+import TeacherAttendancePage from "./pages/TeacherAttendancePortal";
+import TeacherQuizPage from "./pages/TeacherQuizPage";
+import StudentQuizPage from "./pages/StudentQuizPage";
 function App() {
   return (
     <GoogleOAuthProvider clientId="707090231940-d10jbf8rjelqlm0c2hunbltbjm5hp2p4.apps.googleusercontent.com">
@@ -18,6 +21,10 @@ function App() {
           <Route path="/mcqgenerator" element={<MCQGenerator />} />
           <Route path="/classroom/:id" element={<ClassroomViewer />} />
           <Route path="/feedback" element={<Feedback />} />
+          <Route path="/attendance" element={<AttendancePage />} />
+          <Route path="/teacher" element={<TeacherAttendancePage />} />
+          <Route path="/teacher-quiz" element={<TeacherQuizPage />} />
+          <Route path="/student-quiz" element={<StudentQuizPage />} />
         </Routes>
       </Router>
     </GoogleOAuthProvider>

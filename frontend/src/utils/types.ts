@@ -67,3 +67,38 @@ export interface FeedbackData {
   jaccard_index: number;
   ai_text: string; // Added ai_text to store the AI-generated content
 }
+
+export interface Student {
+  id: string;
+  name: string;
+  rollNumber: string;
+  profileImage?: string;
+}
+
+export interface AttendanceRecord {
+  id: string;
+  date: string;
+  status: "present" | "absent" | "excused";
+}
+
+export interface SubjectAttendance {
+  id: string;
+  name: string;
+  totalClasses: number;
+  attended: number;
+  percentage: number;
+  records: AttendanceRecord[];
+}
+
+export interface Class {
+  id: string;
+  name: string;
+  students: Student[];
+}
+
+export interface Subject {
+  id: string;
+  name: string;
+  code: string;
+  classId: string;
+}

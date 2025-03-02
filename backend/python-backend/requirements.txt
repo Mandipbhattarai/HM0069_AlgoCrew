@@ -1,0 +1,11 @@
+fastapi==0.103.1
+uvicorn==0.23.2
+httpx>=0.23.0,<0.24.0  # Changed to match supabase requirement
+pydantic==2.3.0
+google-generativeai==0.3.0
+sentence-transformers==2.2.2
+supabase==1.0.3
+mammoth==1.6.0
+PyPDF2==3.0.1
+google-api-python-client==2.97.0
+python-multipart==0.0.6
