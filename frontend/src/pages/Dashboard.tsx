@@ -24,7 +24,7 @@ import {
   HelpCircle,
   BookMarked,
   Video,
-  PenTool
+  PenTool,
 } from "lucide-react";
 import Navbar from "../components/Navbar";
 import { Button } from "../components/ui/button";
@@ -50,86 +50,196 @@ export default function Dashboard() {
   const [totalLoginDays, setTotalLoginDays] = useState<number>(45);
   const [completionRate, setCompletionRate] = useState<number>(87);
   const [selectedTimeframe, setSelectedTimeframe] = useState<string>("week");
-  const [activeQuickAction, setActiveQuickAction] = useState<string | null>(null);
-  
+  const [activeQuickAction, setActiveQuickAction] = useState<string | null>(
+    null
+  );
+
   // Calculate overall attendance
-  const totalClasses = mockAttendanceData.reduce((sum, subject) => sum + subject.totalClasses, 0);
-  const totalAttended = mockAttendanceData.reduce((sum, subject) => sum + subject.attended, 0);
-  const overallPercentage = totalClasses > 0 ? (totalAttended / totalClasses) * 100 : 0;
-  
+  const totalClasses = mockAttendanceData.reduce(
+    (sum, subject) => sum + subject.totalClasses,
+    0
+  );
+  const totalAttended = mockAttendanceData.reduce(
+    (sum, subject) => sum + subject.attended,
+    0
+  );
+  const overallPercentage =
+    totalClasses > 0 ? (totalAttended / totalClasses) * 100 : 0;
+
   // Mock activity data
   const activityData = [65, 40, 85, 30, 70, 50, 90];
   const weekdays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-  
+
   // Mock achievements
   const achievements = [
-    { id: 1, title: "Perfect Week", description: "100% attendance for a week", icon: CheckCircle, completed: true, progress: 100 },
-    { id: 2, title: "Knowledge Seeker", description: "Complete 50 assignments", icon: BookOpen, completed: false, progress: 76 },
-    { id: 3, title: "Early Bird", description: "Login before 8 AM for 5 days", icon: Clock, completed: true, progress: 100 },
-    { id: 4, title: "Top Performer", description: "Score 90%+ in 3 subjects", icon: Award, completed: false, progress: 67 }
+    {
+      id: 1,
+      title: "Perfect Week",
+      description: "100% attendance for a week",
+      icon: CheckCircle,
+      completed: true,
+      progress: 100,
+    },
+    {
+      id: 2,
+      title: "Knowledge Seeker",
+      description: "Complete 50 assignments",
+      icon: BookOpen,
+      completed: false,
+      progress: 76,
+    },
+    {
+      id: 3,
+      title: "Early Bird",
+      description: "Login before 8 AM for 5 days",
+      icon: Clock,
+      completed: true,
+      progress: 100,
+    },
+    {
+      id: 4,
+      title: "Top Performer",
+      description: "Score 90%+ in 3 subjects",
+      icon: Award,
+      completed: false,
+      progress: 67,
+    },
   ];
-  
+
   // Mock upcoming deadlines
   const upcomingDeadlines = [
-    { id: 1, title: "Physics Assignment", subject: "Physics", dueDate: "2025-03-15", daysLeft: 2 },
-    { id: 2, title: "Literature Essay", subject: "English Literature", dueDate: "2025-03-18", daysLeft: 5 },
-    { id: 3, title: "Algorithm Project", subject: "Computer Science", dueDate: "2025-03-20", daysLeft: 7 }
+    {
+      id: 1,
+      title: "Physics Assignment",
+      subject: "Physics",
+      dueDate: "2025-03-15",
+      daysLeft: 2,
+    },
+    {
+      id: 2,
+      title: "Literature Essay",
+      subject: "English Literature",
+      dueDate: "2025-03-18",
+      daysLeft: 5,
+    },
+    {
+      id: 3,
+      title: "Algorithm Project",
+      subject: "Computer Science",
+      dueDate: "2025-03-20",
+      daysLeft: 7,
+    },
   ];
-  
+
   // Mock recent activities
   const recentActivities = [
-    { id: 1, action: "Submitted assignment", subject: "Mathematics", time: "2 hours ago" },
+    {
+      id: 1,
+      action: "Submitted assignment",
+      subject: "Mathematics",
+      time: "2 hours ago",
+    },
     { id: 2, action: "Attended class", subject: "Physics", time: "Yesterday" },
-    { id: 3, action: "Completed quiz", subject: "Computer Science", time: "2 days ago" },
-    { id: 4, action: "Viewed lecture notes", subject: "English Literature", time: "3 days ago" }
+    {
+      id: 3,
+      action: "Completed quiz",
+      subject: "Computer Science",
+      time: "2 days ago",
+    },
+    {
+      id: 4,
+      action: "Viewed lecture notes",
+      subject: "English Literature",
+      time: "3 days ago",
+    },
   ];
-  
+
   // Mock performance by subject
   const subjectPerformance = [
     { subject: "Mathematics", score: 92, trend: "up" },
     { subject: "Physics", score: 85, trend: "up" },
     { subject: "Computer Science", score: 95, trend: "up" },
     { subject: "English Literature", score: 78, trend: "down" },
-    { subject: "Chemistry", score: 82, trend: "stable" }
+    { subject: "Chemistry", score: 82, trend: "stable" },
   ];
 
   // Enhanced quick actions
   const quickActions = [
-    { id: "attendance", title: "Attendance", icon: Users, path: "/attendance", color: "from-purple-500 to-purple-600" },
-    { id: "assignments", title: "Assignments", icon: FileText, path: "/assignments", color: "from-blue-500 to-blue-600" },
-    { id: "schedule", title: "Schedule", icon: Calendar, path: "/schedule", color: "from-green-500 to-green-600" },
-    { id: "grades", title: "Grades", icon: BarChart3, path: "/grades", color: "from-yellow-500 to-yellow-600" },
-    { id: "courses", title: "Courses", icon: BookMarked, path: "/courses", color: "from-red-500 to-red-600" },
-    { id: "notes", title: "Notes", icon: PenTool, path: "/notes", color: "from-pink-500 to-pink-600" },
+    {
+      id: "attendance",
+      title: "Attendance",
+      icon: Users,
+      path: "/attendance",
+      color: "from-purple-500 to-purple-600",
+    },
+    {
+      id: "assignments",
+      title: "Assignments",
+      icon: FileText,
+      path: "/assignments",
+      color: "from-blue-500 to-blue-600",
+    },
+    {
+      id: "schedule",
+      title: "Schedule",
+      icon: Calendar,
+      path: "/schedule",
+      color: "from-green-500 to-green-600",
+    },
+    {
+      id: "grades",
+      title: "Grades",
+      icon: BarChart3,
+      path: "/grades",
+      color: "from-yellow-500 to-yellow-600",
+    },
+    {
+      id: "courses",
+      title: "Courses",
+      icon: BookMarked,
+      path: "/courses",
+      color: "from-red-500 to-red-600",
+    },
+    {
+      id: "notes",
+      title: "Notes",
+      icon: PenTool,
+      path: "/notes",
+      color: "from-pink-500 to-pink-600",
+    },
   ];
-  
+
   const getAttendanceColor = (percentage: number) => {
     if (percentage >= 90) return "text-green-500";
     if (percentage >= 75) return "text-yellow-500";
     return "text-red-500";
   };
-  
+
   const getAttendanceBgColor = (percentage: number) => {
     if (percentage >= 90) return "bg-green-500";
     if (percentage >= 75) return "bg-yellow-500";
     return "bg-red-500";
   };
-  
+
   const getTrendIcon = (trend: string) => {
-    if (trend === "up") return <TrendingUp className="h-4 w-4 text-green-500" />;
-    if (trend === "down") return <TrendingUp className="h-4 w-4 text-red-500 transform rotate-180" />;
+    if (trend === "up")
+      return <TrendingUp className="h-4 w-4 text-green-500" />;
+    if (trend === "down")
+      return (
+        <TrendingUp className="h-4 w-4 text-red-500 transform rotate-180" />
+      );
     return <div className="h-4 w-4 border-t-2 border-gray-400"></div>;
   };
 
   const handleQuickActionClick = (actionId: string, path: string) => {
     setActiveQuickAction(actionId);
-    
+
     // Add a small delay for the animation effect before navigating
     setTimeout(() => {
       navigate(path);
     }, 300);
   };
-  
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />
@@ -166,7 +276,7 @@ export default function Dashboard() {
             <h3 className="text-2xl font-bold mb-1">{activeStreak} days</h3>
             <p className="text-gray-600 text-sm">Current active streak</p>
           </motion.div>
-          
+
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -184,7 +294,7 @@ export default function Dashboard() {
             <h3 className="text-2xl font-bold mb-1">{totalLoginDays} days</h3>
             <p className="text-gray-600 text-sm">Total active days this term</p>
           </motion.div>
-          
+
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -202,7 +312,7 @@ export default function Dashboard() {
             <h3 className="text-2xl font-bold mb-1">{completionRate}%</h3>
             <p className="text-gray-600 text-sm">Assignment completion rate</p>
           </motion.div>
-          
+
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -217,7 +327,11 @@ export default function Dashboard() {
                 Attendance
               </span>
             </div>
-            <h3 className={`text-2xl font-bold mb-1 ${getAttendanceColor(overallPercentage)}`}>
+            <h3
+              className={`text-2xl font-bold mb-1 ${getAttendanceColor(
+                overallPercentage
+              )}`}
+            >
               {overallPercentage.toFixed(1)}%
             </h3>
             <p className="text-gray-600 text-sm">Overall attendance rate</p>
@@ -236,21 +350,21 @@ export default function Dashboard() {
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-semibold">Activity Overview</h2>
               <div className="flex space-x-2">
-                <button 
+                <button
                   onClick={() => setSelectedTimeframe("week")}
                   className={`px-3 py-1 text-sm rounded-md ${
-                    selectedTimeframe === "week" 
-                      ? "bg-purple-100 text-purple-700" 
+                    selectedTimeframe === "week"
+                      ? "bg-purple-100 text-purple-700"
                       : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                   }`}
                 >
                   Week
                 </button>
-                <button 
+                <button
                   onClick={() => setSelectedTimeframe("month")}
                   className={`px-3 py-1 text-sm rounded-md ${
-                    selectedTimeframe === "month" 
-                      ? "bg-purple-100 text-purple-700" 
+                    selectedTimeframe === "month"
+                      ? "bg-purple-100 text-purple-700"
                       : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                   }`}
                 >
@@ -258,20 +372,22 @@ export default function Dashboard() {
                 </button>
               </div>
             </div>
-            
+
             <div className="h-64 flex items-end space-x-2">
               {activityData.map((value, index) => (
                 <div key={index} className="flex-1 flex flex-col items-center">
-                  <div 
+                  <div
                     className="w-full bg-purple-500 rounded-t-md transition-all duration-500 ease-in-out"
-                    style={{ height: `${value}%`, opacity: 0.7 + (index / 10) }}
+                    style={{ height: `${value}%`, opacity: 0.7 + index / 10 }}
                   ></div>
-                  <span className="text-xs mt-2 text-gray-600">{weekdays[index]}</span>
+                  <span className="text-xs mt-2 text-gray-600">
+                    {weekdays[index]}
+                  </span>
                 </div>
               ))}
             </div>
           </motion.div>
-          
+
           {/* Achievements */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -282,9 +398,22 @@ export default function Dashboard() {
             <h2 className="text-xl font-semibold mb-4">Achievements</h2>
             <div className="space-y-4">
               {achievements.map((achievement) => (
-                <div key={achievement.id} className="flex items-start space-x-3">
-                  <div className={`p-2 rounded-full ${achievement.completed ? 'bg-green-100' : 'bg-gray-100'}`}>
-                    <achievement.icon className={`h-5 w-5 ${achievement.completed ? 'text-green-600' : 'text-gray-500'}`} />
+                <div
+                  key={achievement.id}
+                  className="flex items-start space-x-3"
+                >
+                  <div
+                    className={`p-2 rounded-full ${
+                      achievement.completed ? "bg-green-100" : "bg-gray-100"
+                    }`}
+                  >
+                    <achievement.icon
+                      className={`h-5 w-5 ${
+                        achievement.completed
+                          ? "text-green-600"
+                          : "text-gray-500"
+                      }`}
+                    />
                   </div>
                   <div className="flex-1">
                     <div className="flex justify-between items-center">
@@ -293,10 +422,16 @@ export default function Dashboard() {
                         {achievement.progress}%
                       </span>
                     </div>
-                    <p className="text-xs text-gray-600 mb-1">{achievement.description}</p>
+                    <p className="text-xs text-gray-600 mb-1">
+                      {achievement.description}
+                    </p>
                     <div className="h-1.5 bg-gray-200 rounded-full overflow-hidden">
-                      <div 
-                        className={`h-full ${achievement.completed ? 'bg-green-500' : 'bg-purple-500'}`}
+                      <div
+                        className={`h-full ${
+                          achievement.completed
+                            ? "bg-green-500"
+                            : "bg-purple-500"
+                        }`}
                         style={{ width: `${achievement.progress}%` }}
                       ></div>
                     </div>
@@ -305,17 +440,19 @@ export default function Dashboard() {
               ))}
             </div>
             <div className="mt-4 text-center">
-              <Button 
-                variant="ghost" 
+              <Button
+                variant="ghost"
                 className="text-purple-600 hover:text-purple-700 text-sm"
-                onClick={() => {/* View all achievements */}}
+                onClick={() => {
+                  /* View all achievements */
+                }}
               >
                 View All Achievements
               </Button>
             </div>
           </motion.div>
         </div>
-        
+
         {/* Upcoming Deadlines and Recent Activity */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
           {/* Upcoming Deadlines */}
@@ -328,23 +465,43 @@ export default function Dashboard() {
             <h2 className="text-xl font-semibold mb-4">Upcoming Deadlines</h2>
             <div className="space-y-4">
               {upcomingDeadlines.map((deadline) => (
-                <div key={deadline.id} className="flex items-start space-x-3 p-3 hover:bg-gray-50 rounded-lg transition-colors">
-                  <div className={`p-2 rounded-full ${
-                    deadline.daysLeft <= 2 ? 'bg-red-100' : deadline.daysLeft <= 5 ? 'bg-yellow-100' : 'bg-green-100'
-                  }`}>
-                    <Calendar className={`h-5 w-5 ${
-                      deadline.daysLeft <= 2 ? 'text-red-600' : deadline.daysLeft <= 5 ? 'text-yellow-600' : 'text-green-600'
-                    }`} />
+                <div
+                  key={deadline.id}
+                  className="flex items-start space-x-3 p-3 hover:bg-gray-50 rounded-lg transition-colors"
+                >
+                  <div
+                    className={`p-2 rounded-full ${
+                      deadline.daysLeft <= 2
+                        ? "bg-red-100"
+                        : deadline.daysLeft <= 5
+                        ? "bg-yellow-100"
+                        : "bg-green-100"
+                    }`}
+                  >
+                    <Calendar
+                      className={`h-5 w-5 ${
+                        deadline.daysLeft <= 2
+                          ? "text-red-600"
+                          : deadline.daysLeft <= 5
+                          ? "text-yellow-600"
+                          : "text-green-600"
+                      }`}
+                    />
                   </div>
                   <div className="flex-1">
                     <div className="flex justify-between">
                       <h3 className="font-medium">{deadline.title}</h3>
-                      <span className={`text-xs font-medium px-2 py-1 rounded-full ${
-                        deadline.daysLeft <= 2 ? 'bg-red-100 text-red-700' : 
-                        deadline.daysLeft <= 5 ? 'bg-yellow-100 text-yellow-700' : 
-                        'bg-green-100 text-green-700'
-                      }`}>
-                        {deadline.daysLeft} {deadline.daysLeft === 1 ? 'day' : 'days'} left
+                      <span
+                        className={`text-xs font-medium px-2 py-1 rounded-full ${
+                          deadline.daysLeft <= 2
+                            ? "bg-red-100 text-red-700"
+                            : deadline.daysLeft <= 5
+                            ? "bg-yellow-100 text-yellow-700"
+                            : "bg-green-100 text-green-700"
+                        }`}
+                      >
+                        {deadline.daysLeft}{" "}
+                        {deadline.daysLeft === 1 ? "day" : "days"} left
                       </span>
                     </div>
                     <p className="text-sm text-gray-600">{deadline.subject}</p>
@@ -353,16 +510,18 @@ export default function Dashboard() {
               ))}
             </div>
             <div className="mt-4 text-center">
-              <Button 
-                variant="ghost" 
+              <Button
+                variant="ghost"
                 className="text-purple-600 hover:text-purple-700 text-sm"
-                onClick={() => {/* View all deadlines */}}
+                onClick={() => {
+                  /* View all deadlines */
+                }}
               >
                 View All Deadlines
               </Button>
             </div>
           </motion.div>
-          
+
           {/* Recent Activity */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -373,14 +532,19 @@ export default function Dashboard() {
             <h2 className="text-xl font-semibold mb-4">Recent Activity</h2>
             <div className="space-y-4">
               {recentActivities.map((activity) => (
-                <div key={activity.id} className="flex items-start space-x-3 p-3 hover:bg-gray-50 rounded-lg transition-colors">
+                <div
+                  key={activity.id}
+                  className="flex items-start space-x-3 p-3 hover:bg-gray-50 rounded-lg transition-colors"
+                >
                   <div className="p-2 bg-blue-100 rounded-full">
                     <Activity className="h-5 w-5 text-blue-600" />
                   </div>
                   <div className="flex-1">
                     <div className="flex justify-between">
                       <h3 className="font-medium">{activity.action}</h3>
-                      <span className="text-xs text-gray-500">{activity.time}</span>
+                      <span className="text-xs text-gray-500">
+                        {activity.time}
+                      </span>
                     </div>
                     <p className="text-sm text-gray-600">{activity.subject}</p>
                   </div>
@@ -388,17 +552,19 @@ export default function Dashboard() {
               ))}
             </div>
             <div className="mt-4 text-center">
-              <Button 
-                variant="ghost" 
+              <Button
+                variant="ghost"
                 className="text-purple-600 hover:text-purple-700 text-sm"
-                onClick={() => {/* View activity history */}}
+                onClick={() => {
+                  /* View activity history */
+                }}
               >
                 View Activity History
               </Button>
             </div>
           </motion.div>
         </div>
-        
+
         {/* Performance by Subject */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -409,22 +575,26 @@ export default function Dashboard() {
           <h2 className="text-xl font-semibold mb-6">Performance by Subject</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
             {subjectPerformance.map((subject, index) => (
-              <div 
+              <div
                 key={index}
                 className="bg-gray-50 rounded-lg p-4 hover:shadow-md transition-shadow"
               >
                 <div className="flex justify-between items-center mb-2">
-                  <h3 className="font-medium text-gray-800">{subject.subject}</h3>
+                  <h3 className="font-medium text-gray-800">
+                    {subject.subject}
+                  </h3>
                   {getTrendIcon(subject.trend)}
                 </div>
                 <div className="flex items-end space-x-2">
                   <span className="text-2xl font-bold">{subject.score}%</span>
                   <div className="flex-1 h-1 bg-gray-200 rounded-full overflow-hidden">
-                    <div 
+                    <div
                       className={`h-full ${
-                        subject.score >= 90 ? 'bg-green-500' : 
-                        subject.score >= 75 ? 'bg-blue-500' : 
-                        'bg-yellow-500'
+                        subject.score >= 90
+                          ? "bg-green-500"
+                          : subject.score >= 75
+                          ? "bg-blue-500"
+                          : "bg-yellow-500"
                       }`}
                       style={{ width: `${subject.score}%` }}
                     ></div>
@@ -434,7 +604,7 @@ export default function Dashboard() {
             ))}
           </div>
         </motion.div>
-        
+
         {/* Enhanced Quick Actions */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -451,19 +621,25 @@ export default function Dashboard() {
                 whileTap={{ scale: 0.95 }}
                 onClick={() => handleQuickActionClick(action.id, action.path)}
                 className={`relative overflow-hidden rounded-xl shadow-md transition-all duration-300 ${
-                  activeQuickAction === action.id ? 'ring-2 ring-offset-2 ring-purple-500' : ''
+                  activeQuickAction === action.id
+                    ? "ring-2 ring-offset-2 ring-purple-500"
+                    : ""
                 }`}
               >
-                <div className={`absolute inset-0 bg-gradient-to-br ${action.color} opacity-90`}></div>
+                <div
+                  className={`absolute inset-0 bg-gradient-to-br ${action.color} opacity-90`}
+                ></div>
                 <div className="relative p-6 flex flex-col items-center justify-center h-full">
                   <action.icon className="h-8 w-8 text-white mb-3" />
-                  <span className="text-white font-medium text-sm">{action.title}</span>
+                  <span className="text-white font-medium text-sm">
+                    {action.title}
+                  </span>
                 </div>
               </motion.button>
             ))}
           </div>
         </motion.div>
-        
+
         {/* Help & Support */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -487,11 +663,14 @@ export default function Dashboard() {
           </div>
           <div className="mt-4 p-4 bg-purple-50 rounded-lg border border-purple-100">
             <p className="text-purple-800">
-              Need help with your studies? Our AI tutor is available 24/7 to assist you with any subject.
+              Need help with your studies? Our AI tutor is available 24/7 to
+              assist you with any subject.
             </p>
-            <Button 
-              className="mt-3 bg-purple-600 hover:bg-purple-700"
-              onClick={() => {/* Open AI tutor */}}
+            <Button
+              className="mt-3 text-white bg-purple-600 hover:bg-purple-700"
+              onClick={() => {
+                /* Open AI tutor */
+              }}
             >
               Ask AI Tutor
             </Button>
