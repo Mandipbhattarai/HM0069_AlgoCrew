@@ -40,7 +40,8 @@ EduPlatform is an innovative solution developed during the Hackmatrix hackathon.
 - **Teacher Dashboard**: [/teacherDashboard](https://hm-0069-frontend.vercel.app/teacherDashboard/)
 
 ## Note : During the testing please perform these steps:
-![image](https://github.com/user-attachments/assets/f178f7fd-3ae1-4e3c-b92f-e9dade157840)
+![ezgif-320a1d619660fc](https://github.com/user-attachments/assets/9eaa5e11-d447-4a86-b61b-290b224c2956)
+
 
 
 ## Screenshots
