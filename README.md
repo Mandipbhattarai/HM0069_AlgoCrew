@@ -17,6 +17,10 @@ EduPlatform is an innovative solution developed during the Hackmatrix hackathon.
 - React
 - Typescript
 - Flask
+- Fast API
+- Supabase
+- Gemini API
+- Google Drive API
 - Google Classroom API
 - MongoDB
 
