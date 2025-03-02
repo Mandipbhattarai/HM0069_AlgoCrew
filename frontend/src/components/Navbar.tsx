@@ -121,6 +121,12 @@ export default function Navbar() {
                   Quiz
                 </Link>
                 <Link
+                  to="/assignment"
+                  className="text-purple-700 hover:text-purple-900"
+                >
+                  Assignment
+                </Link>
+                <Link
                   to="/attendance"
                   className="text-purple-700 hover:text-purple-900"
                 >

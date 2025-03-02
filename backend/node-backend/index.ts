@@ -4,7 +4,6 @@ import crypto from "crypto";
 import dotenv from "dotenv";
 import path from "path";
 import cors from "cors";
-
 // Configure dotenv
 dotenv.config({ path: path.join(__dirname, ".env") });
 
@@ -108,7 +107,6 @@ const generateAccessCode = (length = 6) => {
 
   return result;
 };
-
 // Route for creating a quiz with an access code
 app.post("/api/quizzes", async (req: Request, res: Response): Promise<void> => {
   try {
