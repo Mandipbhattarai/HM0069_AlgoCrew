@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Brain,
@@ -12,8 +12,6 @@ import {
 } from "lucide-react";
 import axios from "axios";
 import Navbar from "@/components/Navbar";
-import QuizAnalysis from "@/components/custom/QuizAnalysis"; // Ensure this path is correct
-import { AnalysisProps } from "@/utils/types"; // Ensure this path is correct
 
 // API URL - adjust to match your backend
 const API_URL = "http://localhost:5000/api";
@@ -32,8 +30,8 @@ const QuizTimer = ({ initialMinutes, onTimeUp }) => {
           return 0;
         }
 
-        // Set warning when less than 5 minutes remaining
-        if (prevSeconds === 300) {
+        // Set warning when less than 1 minute remaining
+        if (prevSeconds === 60) {
           setIsWarning(true);
         }
 
@@ -110,7 +108,7 @@ const ScoreModal = ({ isOpen, onClose, score, total, wrongAnswers }) => {
             <h4 className="text-xl font-semibold mb-4">
               Review Incorrect Answers:
             </h4>
-            <div className="space-y-4 max-h-[60vh] overflow-y-auto pr-4 hidden-scrollbar">
+            <div className="space-y-4 max-h-[60vh] overflow-y-auto pr-4">
               {wrongAnswers.map((wrong, index) => (
                 <div
                   key={index}
@@ -137,8 +135,8 @@ const ScoreModal = ({ isOpen, onClose, score, total, wrongAnswers }) => {
   );
 };
 
-export default function StudentQuizPage() {
-  const [isLoading, setIsLoading] = useState(true);
+export default function StudentQuiz() {
+  const [isLoading, setIsLoading] = useState(false);
   const [quizData, setQuizData] = useState(null);
   const [accessCode, setAccessCode] = useState("");
   const [error, setError] = useState("");
@@ -146,18 +144,11 @@ export default function StudentQuizPage() {
   const [quizStarted, setQuizStarted] = useState(false);
   const [userAnswers, setUserAnswers] = useState({});
   const [showResults, setShowResults] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [timeExpired, setTimeExpired] = useState(false);
-  const [submissionId, setSubmissionId] = useState(null);
   const [correctAnswers, setCorrectAnswers] = useState({});
 
-  const hasSubmitted = useRef(false);
-  const [analysis, setAnalysis] = useState<AnalysisProps[]>([]);
-  const [showAnalysis, setShowAnalysis] = useState(false);
-  const [isLoadingAnalysis, setIsLoadingAnalysis] = useState(false);
-
-  // Load quiz data from URL query param or localStorage
+  // Load quiz data from URL query param
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const code = params.get("code");
@@ -165,55 +156,20 @@ export default function StudentQuizPage() {
     if (code) {
       setAccessCode(code);
       fetchQuiz(code);
-    } else {
-      setIsLoading(false);
-    }
-
-    // Check if quiz was in progress (handle page refresh)
-    const savedQuiz = localStorage.getItem("currentQuiz");
-    const savedAnswers = localStorage.getItem("quizAnswers");
-    const savedName = localStorage.getItem("studentName");
-
-    if (savedQuiz) {
-      try {
-        const parsed = JSON.parse(savedQuiz);
-        setQuizData(parsed);
-        setQuizStarted(true);
-
-        if (savedAnswers) {
-          setUserAnswers(JSON.parse(savedAnswers));
-        }
-
-        if (savedName) {
-          setStudentName(savedName);
-        }
-      } catch (err) {
-        console.error("Error restoring quiz state:", err);
-        localStorage.removeItem("currentQuiz");
-        localStorage.removeItem("quizAnswers");
-      }
     }
   }, []);
-
-  // Save answers to localStorage whenever they change
-  useEffect(() => {
-    if (quizStarted && Object.keys(userAnswers).length > 0) {
-      localStorage.setItem("quizAnswers", JSON.stringify(userAnswers));
-    }
-  }, [userAnswers, quizStarted]);
 
   const fetchQuiz = async (code) => {
     setIsLoading(true);
     setError("");
 
     try {
-      console.log(`Fetching quiz with code: ${code}`);
       const response = await axios.get(`${API_URL}/quizzes/${code}`);
-      console.log("Quiz data received:", response.data);
 
       if (response.data.success) {
         setQuizData(response.data.data);
-        localStorage.setItem("currentQuiz", JSON.stringify(response.data.data));
+        // Also fetch correct answers immediately
+        fetchCorrectAnswers(response.data.data.id);
       } else {
         setError("Could not load quiz. Please check the access code.");
       }
@@ -225,6 +181,33 @@ export default function StudentQuizPage() {
     setIsLoading(false);
   };
 
+  const fetchCorrectAnswers = async (quizId) => {
+    try {
+      const response = await axios.get(`${API_URL}/quizzes/${quizId}/answers`);
+      if (response.data.success) {
+        const answers = {};
+        response.data.data.forEach((item) => {
+          answers[item.questionIndex] = item.correctAnswer;
+        });
+        setCorrectAnswers(answers);
+      }
+    } catch (error) {
+      console.error("Error fetching correct answers:", error);
+      // Use fallback answers if API fails
+      const fallback = {};
+      if (quizData) {
+        quizData.questions.forEach((question, index) => {
+          // Find the correct answer (assuming it's marked in the question data)
+          const correctIndex = question.options.findIndex(
+            (option) => option.isCorrect
+          );
+          fallback[index] = correctIndex >= 0 ? correctIndex : 0;
+        });
+        setCorrectAnswers(fallback);
+      }
+    }
+  };
+
   const handleStartQuiz = () => {
     if (!studentName.trim()) {
       setError("Please enter your name to start the quiz");
@@ -232,7 +215,6 @@ export default function StudentQuizPage() {
     }
 
     setQuizStarted(true);
-    localStorage.setItem("studentName", studentName);
   };
 
   const handleAccessCodeSubmit = (e) => {
@@ -254,90 +236,14 @@ export default function StudentQuizPage() {
     }));
   };
 
-  const fetchCorrectAnswers = async (quizId) => {
-    try {
-      const response = await axios.get(`${API_URL}/quizzes/${quizId}/answers`);
-      if (response.data.success) {
-        const answers = {};
-        response.data.data.forEach((item) => {
-          answers[item.questionIndex] = item.correctAnswer;
-        });
-        return answers;
-      }
-    } catch (error) {
-      console.error("Error fetching correct answers:", error);
-    }
-
-    // Default fallback if API call fails
-    const fallback = {};
-    if (quizData) {
-      quizData.questions.forEach((_, index) => {
-        fallback[index] = 0; // First option as fallback
-      });
-    }
-    return fallback;
-  };
-
-  const handleSubmitQuiz = async () => {
-    if (hasSubmitted.current) return;
-    hasSubmitted.current = true;
-
-    setIsSubmitting(true);
-
-    try {
-      // Fetch correct answers
-      const answers = await fetchCorrectAnswers(quizData._id);
-      setCorrectAnswers(answers);
-
-      // Calculate score
-      let score = 0;
-      Object.keys(userAnswers).forEach((index) => {
-        if (answers[index] === userAnswers[index]) {
-          score++;
-        }
-      });
-
-      // Convert answers object to Map format expected by backend
-      const answersMap = {};
-      Object.keys(userAnswers).forEach((key) => {
-        answersMap[key] = userAnswers[key];
-      });
-
-      // Submit to backend
-      const response = await axios.post(`${API_URL}/submissions`, {
-        quizId: quizData._id,
-        studentName,
-        answers: answersMap,
-        score,
-        timeSpent: quizData.timeLimit * 60 - (timeExpired ? 0 : 1), // If time expired, count full time
-        completed:
-          Object.keys(userAnswers).length === quizData.questions.length,
-      });
-
-      setSubmissionId(response.data.data._id);
-      setShowResults(true);
-      setIsModalOpen(true);
-
-      // Clear localStorage
-      localStorage.removeItem("currentQuiz");
-      localStorage.removeItem("quizAnswers");
-
-      await handleFeedback(); // Call handleFeedback after submitting the quiz
-    } catch (error) {
-      console.error("Error submitting quiz:", error);
-      alert("Failed to submit quiz. Please try again.");
-      hasSubmitted.current = false;
-    }
-
-    setIsSubmitting(false);
+  const handleSubmitQuiz = () => {
+    setShowResults(true);
+    setIsModalOpen(true);
   };
 
   const handleTimeUp = () => {
     setTimeExpired(true);
-
-    if (!hasSubmitted.current) {
-      handleSubmitQuiz();
-    }
+    handleSubmitQuiz();
   };
 
   const calculateScore = () => {
@@ -368,28 +274,6 @@ export default function StudentQuizPage() {
         return null;
       })
       .filter((item) => item !== null);
-  };
-
-  const handleFeedback = async () => {
-    setIsLoadingAnalysis(true);
-    try {
-      const wrongAnswersForAnalysis = getWrongAnswers().map((wrong) => ({
-        question: wrong.question,
-        user_answer: wrong.userAnswer,
-        correct_answer: wrong.correctAnswer,
-      }));
-
-      const response = await axios.post(
-        "https://genmodel.onrender.com/analyze",
-        wrongAnswersForAnalysis
-      );
-      setAnalysis(response.data);
-      setShowAnalysis(true);
-    } catch (error) {
-      console.error("Error getting analysis:", error);
-      alert("Failed to get detailed analysis. Please try again.");
-    }
-    setIsLoadingAnalysis(false);
   };
 
   return (
@@ -612,21 +496,11 @@ export default function StudentQuizPage() {
                         Object.keys(userAnswers).length !==
                           quizData?.questions.length ||
                         showResults ||
-                        isSubmitting ||
                         timeExpired
                       }
                       className="w-full py-4 px-6 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-xl font-medium disabled:opacity-50 hover:from-purple-700 hover:to-blue-700 transition-colors text-lg flex items-center justify-center"
                     >
-                      {isSubmitting ? (
-                        <>
-                          <Loader2 className="h-5 w-5 mr-2 animate-spin" />
-                          Submitting...
-                        </>
-                      ) : showResults ? (
-                        "Quiz Submitted"
-                      ) : (
-                        "Submit Quiz"
-                      )}
+                      {showResults ? "Quiz Submitted" : "Submit Quiz"}
                     </button>
 
                     {showResults && (
@@ -649,12 +523,6 @@ export default function StudentQuizPage() {
                   </div>
                 </div>
               </div>
-              {showAnalysis && (
-                <QuizAnalysis
-                  analysis={analysis}
-                  isLoading={isLoadingAnalysis}
-                />
-              )}
             </>
           )}
         </motion.div>
