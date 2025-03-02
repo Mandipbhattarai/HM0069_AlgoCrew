@@ -273,7 +273,7 @@ const Feedback: React.FC = () => {
       }
 
       try {
-        const response = await fetch("http://127.0.0.1:8000/analyze_content", {
+        const response = await fetch(import.meta.env.VITE_PYTHON_BACKEND, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -293,8 +293,8 @@ const Feedback: React.FC = () => {
         // ✅ Send Email with the fetched feedback data
         emailjs
           .send(
-            "service_isrb93d", // Your EmailJS service ID
-            "template_t70hm68", // Your EmailJS template ID
+            import.meta.env.VITE_EMAIL_JS_SERVICE_ID, // Your EmailJS service ID
+            import.meta.env.VITE_EMAIL_JS_TEMPLATE_ID, // Your EmailJS template ID
             {
               topic: topic,
               recipient_email: "mandip.bhattarai22@pccoepune.org", // Replace with dynamic recipient if needed
@@ -311,7 +311,7 @@ const Feedback: React.FC = () => {
               full_json: JSON.stringify(data, null, 2),
               timestamp: new Date().toISOString(),
             },
-            "X_Gsvwt0ifCA_EVVJ" // Your EmailJS Public Key
+            import.meta.env.VITE_EMAIL_JS_CLIENT_ID // Your EmailJS Public Key
           )
           .then((response) => {
             console.log("Email sent successfully:", response);

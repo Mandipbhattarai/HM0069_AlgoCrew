@@ -29,7 +29,7 @@ export default function TeacherQuizPage() {
   const [showSuccess, setShowSuccess] = useState(false);
 
   // API URL - make sure this matches your actual backend URL
-  const API_URL = "http://localhost:5000/api";
+  const API_URL = import.meta.env.VITE_NODE_BACKEND;
 
   const handleGenerate = async () => {
     setIsGenerating(true);

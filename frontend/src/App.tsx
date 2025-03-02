@@ -14,7 +14,7 @@ import TeacherDashboard from "./pages/TeacherDashboard";
 import Assignment from "./pages/Assignment";
 function App() {
   return (
-    <GoogleOAuthProvider clientId="707090231940-d10jbf8rjelqlm0c2hunbltbjm5hp2p4.apps.googleusercontent.com">
+    <GoogleOAuthProvider clientId={import.meta.env.VITE_CLIENT_ID}>
       <Router>
         <Routes>
           <Route path="/" element={<LandingPage />} />

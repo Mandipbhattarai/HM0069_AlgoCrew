@@ -14,7 +14,7 @@ import axios from "axios";
 import Navbar from "@/components/Navbar";
 
 // API URL - adjust to match your backend
-const API_URL = "http://localhost:5000/api";
+const API_URL = import.meta.env.VITE_NODE_BACKEND;
 
 // Timer component to show remaining time
 const QuizTimer = ({ initialMinutes, onTimeUp }) => {
