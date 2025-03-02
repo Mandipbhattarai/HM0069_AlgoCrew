@@ -29,7 +29,7 @@ import {
 import Navbar from "../components/Navbar";
 import { Button } from "../components/ui/button";
 import { mockAttendanceData } from "../utils/data";
-
+import Chatbot from "../components/custom/ChatBot";
 // Set up axios interceptor to attach token
 axios.interceptors.request.use(
   (config) => {
@@ -662,19 +662,9 @@ export default function Dashboard() {
             </div>
           </div>
           <div className="mt-4 p-4 bg-purple-50 rounded-lg border border-purple-100">
-            <p className="text-purple-800">
-              Need help with your studies? Our AI tutor is available 24/7 to
-              assist you with any subject.
-            </p>
-            <Button
-              className="mt-3 text-white bg-purple-600 hover:bg-purple-700"
-              onClick={() => {
-                /* Open AI tutor */
-              }}
-            >
-              Ask AI Tutor
-            </Button>
-          </div>
+  <Chatbot />
+</div>
+
         </motion.div>
       </main>
     </div>
