@@ -24,18 +24,24 @@ EduPlatform is an innovative solution developed during the Hackmatrix hackathon.
 - Google Classroom API
 - MongoDB
 
+
+
 ## Routes
-- **Landing Page**: /
-- **Student Dashboard**: /dashboard
-- **Classroom**: /classroom
-- **MCQ Generator**: /mcqgenerator
-- **Classroom Viewer**: /classroom/:id
-- **Feedback**: /feedback
-- **Student Attendance Page**: /attendance
-- **Teacher Attendance Page**: /teacher
-- **Teacher Quiz Page**: /teacher-quiz
-- **Student Quiz Page**: /student-quiz
-- **Teacher Dashboard**: /teacherDashboard
+- **Landing Page**: [/](https://hm-0069-frontend.vercel.app/)
+- **Student Dashboard**: [/dashboard](https://hm-0069-frontend.vercel.app/dashboard/)
+- **Classroom**: [/classroom](https://hm-0069-frontend.vercel.app/classroom/)
+- **MCQ Generator**: [/mcqgenerator](https://hm-0069-frontend.vercel.app/)
+- **Classroom Viewer**: [/classroom/:id](https://hm-0069-frontend.vercel.app/classroom/:id/)
+- **Feedback**: [/feedback](https://hm-0069-frontend.vercel.app/feedback/)
+- **Student Attendance Page**: [/attendance](https://hm-0069-frontend.vercel.app/)
+- **Teacher Attendance Page**: [/teacher](https://hm-0069-frontend.vercel.app/attendance/)
+- **Teacher Quiz Page**: [/teacher-quiz](https://hm-0069-frontend.vercel.app/teacher-quiz/)
+- **Student Quiz Page**: [/student-quiz](https://hm-0069-frontend.vercel.app/student-quiz/)
+- **Teacher Dashboard**: [/teacherDashboard](https://hm-0069-frontend.vercel.app/teacherDashboard/)
+
+## Note : During the testing please perform these steps:
+![image](https://github.com/user-attachments/assets/f178f7fd-3ae1-4e3c-b92f-e9dade157840)
+
 
 ## Screenshots
 ### Landing Page
